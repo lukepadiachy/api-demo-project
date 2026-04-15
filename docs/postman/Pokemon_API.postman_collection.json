@@ -1,0 +1,469 @@
+{
+  "info": {
+    "name": "Pokemon API - Demo Project",
+    "description": "Comprehensive Postman collection for PokéAPI demo endpoints. This collection includes all CRUD operations, search functionality, type information, battle matchups, and error handling test cases.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "pokemon-api-v1"
+  },
+  "item": [
+    {
+      "name": "Health & Status",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Check API health status and verify the server is running properly."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for checking API health and status"
+    },
+    {
+      "name": "Pokemon Endpoints",
+      "item": [
+        {
+          "name": "List All Pokemon",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon"]
+            },
+            "description": "Retrieve a list of all available Pokemon. Returns basic information for each Pokemon."
+          },
+          "response": []
+        },
+        {
+          "name": "List Pokemon with Pagination",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon?limit=5&offset=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5",
+                  "description": "Number of results to return"
+                },
+                {
+                  "key": "offset",
+                  "value": "10",
+                  "description": "Number of results to skip"
+                }
+              ]
+            },
+            "description": "Retrieve a paginated list of Pokemon. Use limit to control how many results to return and offset to skip results."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pokemon by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/25",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "25"]
+            },
+            "description": "Retrieve detailed information about a specific Pokemon by its ID (e.g., 25 for Pikachu)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pokemon by Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/pikachu",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "pikachu"]
+            },
+            "description": "Retrieve detailed information about a specific Pokemon by its name (e.g., 'pikachu')."
+          },
+          "response": []
+        },
+        {
+          "name": "Search Pokemon by Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/search?name=char",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "search"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "char",
+                  "description": "Search term (minimum 2 characters)"
+                }
+              ]
+            },
+            "description": "Search for Pokemon by name. Supports partial matching (e.g., 'char' will find Charmander, Charmeleon, Charizard)."
+          },
+          "response": []
+        }
+      ],
+      "description": "Core Pokemon endpoints for retrieving and searching Pokemon data"
+    },
+    {
+      "name": "Type Endpoints",
+      "item": [
+        {
+          "name": "List All Types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/types",
+              "host": ["{{base_url}}"],
+              "path": ["api", "types"]
+            },
+            "description": "Retrieve a list of all Pokemon types (e.g., fire, water, grass, electric)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Type Details - Fire",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/types/fire",
+              "host": ["{{base_url}}"],
+              "path": ["api", "types", "fire"]
+            },
+            "description": "Retrieve detailed information about the Fire type, including strengths, weaknesses, and Pokemon of this type."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Type Details - Water",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/types/water",
+              "host": ["{{base_url}}"],
+              "path": ["api", "types", "water"]
+            },
+            "description": "Retrieve detailed information about the Water type."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Type Details - Grass",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/types/grass",
+              "host": ["{{base_url}}"],
+              "path": ["api", "types", "grass"]
+            },
+            "description": "Retrieve detailed information about the Grass type."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Type Details - Electric",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/types/electric",
+              "host": ["{{base_url}}"],
+              "path": ["api", "types", "electric"]
+            },
+            "description": "Retrieve detailed information about the Electric type."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for retrieving Pokemon type information and relationships"
+    },
+    {
+      "name": "Battle System",
+      "item": [
+        {
+          "name": "Battle Matchup - Fire vs Grass",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/battle/matchup?attacker=fire&defender=grass",
+              "host": ["{{base_url}}"],
+              "path": ["api", "battle", "matchup"],
+              "query": [
+                {
+                  "key": "attacker",
+                  "value": "fire",
+                  "description": "Attacking Pokemon type"
+                },
+                {
+                  "key": "defender",
+                  "value": "grass",
+                  "description": "Defending Pokemon type"
+                }
+              ]
+            },
+            "description": "Calculate battle effectiveness when Fire type attacks Grass type. Fire is super effective against Grass (2x damage)."
+          },
+          "response": []
+        },
+        {
+          "name": "Battle Matchup - Water vs Fire",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/battle/matchup?attacker=water&defender=fire",
+              "host": ["{{base_url}}"],
+              "path": ["api", "battle", "matchup"],
+              "query": [
+                {
+                  "key": "attacker",
+                  "value": "water",
+                  "description": "Attacking Pokemon type"
+                },
+                {
+                  "key": "defender",
+                  "value": "fire",
+                  "description": "Defending Pokemon type"
+                }
+              ]
+            },
+            "description": "Calculate battle effectiveness when Water type attacks Fire type. Water is super effective against Fire (2x damage)."
+          },
+          "response": []
+        },
+        {
+          "name": "Battle Matchup - Fire vs Water",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/battle/matchup?attacker=fire&defender=water",
+              "host": ["{{base_url}}"],
+              "path": ["api", "battle", "matchup"],
+              "query": [
+                {
+                  "key": "attacker",
+                  "value": "fire",
+                  "description": "Attacking Pokemon type"
+                },
+                {
+                  "key": "defender",
+                  "value": "water",
+                  "description": "Defending Pokemon type"
+                }
+              ]
+            },
+            "description": "Calculate battle effectiveness when Fire type attacks Water type. Fire is not very effective against Water (0.5x damage)."
+          },
+          "response": []
+        },
+        {
+          "name": "Battle Matchup - Electric vs Electric",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/battle/matchup?attacker=electric&defender=electric",
+              "host": ["{{base_url}}"],
+              "path": ["api", "battle", "matchup"],
+              "query": [
+                {
+                  "key": "attacker",
+                  "value": "electric",
+                  "description": "Attacking Pokemon type"
+                },
+                {
+                  "key": "defender",
+                  "value": "electric",
+                  "description": "Defending Pokemon type"
+                }
+              ]
+            },
+            "description": "Calculate battle effectiveness when Electric type attacks Electric type. Neutral effectiveness (1x damage)."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for calculating type effectiveness in Pokemon battles"
+    },
+    {
+      "name": "Error Cases",
+      "item": [
+        {
+          "name": "Pokemon Not Found - Invalid ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/999999",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "999999"]
+            },
+            "description": "Test error handling for non-existent Pokemon ID. Should return 404 Not Found."
+          },
+          "response": []
+        },
+        {
+          "name": "Pokemon Not Found - Invalid Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/invalidpokemonname",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "invalidpokemonname"]
+            },
+            "description": "Test error handling for non-existent Pokemon name. Should return 404 Not Found."
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Search - Too Short",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/search?name=p",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "search"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "p",
+                  "description": "Search term too short (needs minimum 2 characters)"
+                }
+              ]
+            },
+            "description": "Test error handling for search query that's too short. Should return 400 Bad Request indicating minimum character requirement."
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Search - Missing Parameter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/search",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "search"]
+            },
+            "description": "Test error handling for search without name parameter. Should return 400 Bad Request."
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/types/invalidtype",
+              "host": ["{{base_url}}"],
+              "path": ["api", "types", "invalidtype"]
+            },
+            "description": "Test error handling for non-existent Pokemon type. Should return 404 Not Found."
+          },
+          "response": []
+        },
+        {
+          "name": "Battle Matchup - Missing Defender",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/battle/matchup?attacker=fire",
+              "host": ["{{base_url}}"],
+              "path": ["api", "battle", "matchup"],
+              "query": [
+                {
+                  "key": "attacker",
+                  "value": "fire",
+                  "description": "Attacking type"
+                }
+              ]
+            },
+            "description": "Test error handling for battle matchup with missing defender parameter. Should return 400 Bad Request."
+          },
+          "response": []
+        },
+        {
+          "name": "Battle Matchup - Missing Attacker",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/battle/matchup?defender=grass",
+              "host": ["{{base_url}}"],
+              "path": ["api", "battle", "matchup"],
+              "query": [
+                {
+                  "key": "defender",
+                  "value": "grass",
+                  "description": "Defending type"
+                }
+              ]
+            },
+            "description": "Test error handling for battle matchup with missing attacker parameter. Should return 400 Bad Request."
+          },
+          "response": []
+        },
+        {
+          "name": "Battle Matchup - Invalid Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/battle/matchup?attacker=invalidtype&defender=fire",
+              "host": ["{{base_url}}"],
+              "path": ["api", "battle", "matchup"],
+              "query": [
+                {
+                  "key": "attacker",
+                  "value": "invalidtype",
+                  "description": "Invalid attacking type"
+                },
+                {
+                  "key": "defender",
+                  "value": "fire",
+                  "description": "Defending type"
+                }
+              ]
+            },
+            "description": "Test error handling for battle matchup with invalid type. Should return 400 Bad Request or 404 Not Found."
+          },
+          "response": []
+        }
+      ],
+      "description": "Test cases for error handling and validation"
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+}
