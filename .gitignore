@@ -1,0 +1,15 @@
+node_modules/
+npm-debug.log*
+package-lock.json
+.env
+.DS_Store
+*.log
+*.pid
+coverage/
+.nyc_output/
+dist/
+build/
+
+# Server process files
+server.pid
+.server.pid
