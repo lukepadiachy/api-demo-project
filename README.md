@@ -66,6 +66,7 @@ npm start
 | TICKET-005 | `GET /api/types` | Planned |
 | TICKET-006 | `GET /api/types/:type` | Planned |
 | TICKET-007 | `GET /api/battle/matchup` | Planned |
+| TICKET-008 | `GET /api/pokemon/random` | Implemented |
 
 See `docs/tickets/` for full acceptance criteria.
 

@@ -4,6 +4,7 @@ const healthCheck = require('./routes/health');
 const { listPokemon, getPokemon, searchPokemon } = require('./routes/pokemon');
 const { listTypes, getTypeDetails } = require('./routes/types');
 const { calculateMatchup } = require('./routes/battle');
+const randomEncounter = require('./routes/randomEncounter');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,6 +19,7 @@ app.use((req, res, next) => {
 
 app.get('/health', healthCheck);
 
+app.get('/api/pokemon/random', randomEncounter);
 app.get('/api/pokemon/search', searchPokemon);
 app.get('/api/pokemon/:identifier', getPokemon);
 app.get('/api/pokemon', listPokemon);
@@ -57,6 +59,7 @@ app.listen(PORT, () => {
   console.log('\nAvailable Endpoints:');
   console.log('  GET  /health');
   console.log('  GET  /api/pokemon');
+  console.log('  GET  /api/pokemon/random');
   console.log('  GET  /api/pokemon/:id');
   console.log('  GET  /api/pokemon/search?name=');
   console.log('  GET  /api/types');
