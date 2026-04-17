@@ -117,6 +117,114 @@
             "description": "Search for Pokemon by name. Supports partial matching (e.g., 'char' will find Charmander, Charmeleon, Charizard)."
           },
           "response": []
+        },
+        {
+          "name": "Random Pokemon - No Filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/random",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "random"]
+            },
+            "description": "Get a random Pokemon encounter without any filters. Returns a random Pokemon from the entire database."
+          },
+          "response": []
+        },
+        {
+          "name": "Random Pokemon - Filter by Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/random?type=fire",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "random"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "fire",
+                  "description": "Filter by Pokemon type"
+                }
+              ]
+            },
+            "description": "Get a random Pokemon encounter filtered by type. Returns a random Fire-type Pokemon."
+          },
+          "response": []
+        },
+        {
+          "name": "Random Pokemon - Filter by Generation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/random?generation=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "random"],
+              "query": [
+                {
+                  "key": "generation",
+                  "value": "1",
+                  "description": "Filter by generation (1-9)"
+                }
+              ]
+            },
+            "description": "Get a random Pokemon encounter filtered by generation. Returns a random Pokemon from Generation 1."
+          },
+          "response": []
+        },
+        {
+          "name": "Random Pokemon - Filter by Min Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/random?minStats=500",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "random"],
+              "query": [
+                {
+                  "key": "minStats",
+                  "value": "500",
+                  "description": "Minimum base stat total (positive integer)"
+                }
+              ]
+            },
+            "description": "Get a random Pokemon encounter filtered by minimum base stat total. Returns a random Pokemon with at least 500 base stat total."
+          },
+          "response": []
+        },
+        {
+          "name": "Random Pokemon - Combined Filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/random?type=dragon&generation=3&minStats=400",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "random"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "dragon",
+                  "description": "Filter by Pokemon type"
+                },
+                {
+                  "key": "generation",
+                  "value": "3",
+                  "description": "Filter by generation (1-9)"
+                },
+                {
+                  "key": "minStats",
+                  "value": "400",
+                  "description": "Minimum base stat total (positive integer)"
+                }
+              ]
+            },
+            "description": "Get a random Pokemon encounter with multiple filters applied. Returns a random Dragon-type Pokemon from Generation 3 with at least 400 base stat total."
+          },
+          "response": []
         }
       ],
       "description": "Core Pokemon endpoints for retrieving and searching Pokemon data"
@@ -452,6 +560,95 @@
               ]
             },
             "description": "Test error handling for battle matchup with invalid type. Should return 400 Bad Request or 404 Not Found."
+          },
+          "response": []
+        },
+        {
+          "name": "Random Pokemon - Invalid Generation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/random?generation=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "random"],
+              "query": [
+                {
+                  "key": "generation",
+                  "value": "10",
+                  "description": "Invalid generation (must be 1-9)"
+                }
+              ]
+            },
+            "description": "Test error handling for random Pokemon with invalid generation. Should return 400 Bad Request."
+          },
+          "response": []
+        },
+        {
+          "name": "Random Pokemon - Invalid Min Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/random?minStats=-50",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "random"],
+              "query": [
+                {
+                  "key": "minStats",
+                  "value": "-50",
+                  "description": "Invalid negative minimum stats"
+                }
+              ]
+            },
+            "description": "Test error handling for random Pokemon with negative minimum stats. Should return 400 Bad Request."
+          },
+          "response": []
+        },
+        {
+          "name": "Random Pokemon - Invalid Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/random?type=invalidtype",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "random"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "invalidtype",
+                  "description": "Non-existent Pokemon type"
+                }
+              ]
+            },
+            "description": "Test error handling for random Pokemon with invalid type. Should return 400 Bad Request."
+          },
+          "response": []
+        },
+        {
+          "name": "Random Pokemon - No Matches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pokemon/random?type=normal&minStats=9000",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pokemon", "random"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "normal",
+                  "description": "Filter by Pokemon type"
+                },
+                {
+                  "key": "minStats",
+                  "value": "9000",
+                  "description": "Impossibly high stat requirement"
+                }
+              ]
+            },
+            "description": "Test error handling for random Pokemon with filters that yield no results. Should return 404 Not Found."
           },
           "response": []
         }
