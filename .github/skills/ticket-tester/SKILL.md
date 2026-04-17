@@ -1,11 +1,16 @@
 ---
 name: ticket-tester
-description: Test API endpoints against ticket acceptance criteria and generate reports. Use when asked to test tickets, validate endpoints, check implementation, or generate test summaries.
+description: Test API endpoints against ticket acceptance criteria using the Postman CLI and generate reports. Use when asked to test tickets, validate endpoints, check implementation, or generate test summaries.
+allowed-tools:
+  - bash
+  - grep
+  - glob
+  - view
 ---
 
 # Ticket Tester Skill
 
-This skill validates API endpoints against ticket acceptance criteria and generates comprehensive test reports. It can test individual tickets or generate summary reports for all tickets.
+Validates API endpoints against ticket acceptance criteria using the **Postman CLI** and generates comprehensive test reports. Can test individual tickets or generate summary reports for all tickets.
 
 ## Usage
 
@@ -23,37 +28,66 @@ This skill validates API endpoints against ticket acceptance criteria and genera
 
 ## What I'll Do
 
+This skill delegates testing work to the **postman-tester** agent for execution.
+
 ### Mode 1: Test Individual Ticket
+
 1. **Read the ticket** from `docs/tickets/TICKET-XXX.md`
 2. **Extract acceptance criteria** (all AC sections)
-3. **Make HTTP requests** to test the endpoint
-4. **Validate responses** against expected:
-   - Status codes
-   - Response structure (fields present)
-   - Data types
-   - Values and ranges
-5. **Generate report** at `test-results/TICKET-XXX/report.md` with:
-   - Pass/Fail for each AC
-   - Details of failures
-   - HTTP request/response samples
-   - Timestamp
+3. **Delegate to the `postman-tester` agent** to execute tests:
+   - The agent uses `postman request` to test each endpoint
+   - Validates responses against expected status codes, structure, data types, values
+   - Measures response times against AC requirements
+4. **Generate report** at `test-results/TICKET-XXX/report.md`
+
+#### Postman CLI Commands Used
+
+```bash
+# Test a GET endpoint
+postman request GET http://localhost:3000/health --response-only
+
+# Test a POST endpoint with body
+postman request POST http://localhost:3000/api/pokemon \
+  --body '{"name": "Pikachu", "type": "Electric"}' \
+  --response-only
+
+# Test error scenarios
+postman request GET http://localhost:3000/api/pokemon/999999 --response-only
+
+# Run a full Postman collection (if available)
+postman collection run <collectionId-or-path> \
+  --env-var "baseUrl=http://localhost:3000" \
+  -r cli,json \
+  --reporter-json-export ./test-results/results.json \
+  --verbose
+```
 
 ### Mode 2: Generate Summary Report
+
 1. **Scan** `test-results/` directory for all ticket reports
 2. **Extract** pass/fail status from each report
 3. **Aggregate** results and calculate metrics
-4. **Generate** `test-results/SUMMARY.md` with:
-   - Total tickets tested
-   - Pass/fail counts and percentages
-   - Table of all tickets with status
-   - Details of failed tickets
-   - Recommendations for fixes
+4. **Generate** `test-results/SUMMARY.md`
+
+## Agent Delegation
+
+When testing tickets, delegate to the `postman-tester` agent:
+
+```
+Use the postman-tester agent to test TICKET-XXX against its acceptance criteria.
+Read docs/tickets/TICKET-XXX.md for the acceptance criteria.
+Use postman request to test each AC.
+Write results to test-results/TICKET-XXX/report.md.
+```
+
+When testing all tickets, spin up the `postman-tester` agent for each ticket or batch them.
 
 ## Testing Approach
 
 ### For each Acceptance Criteria:
 
 **AC: Response Structure**
+- Use `postman request` with `--response-only` to get the response
 - Check all required fields exist
 - Verify correct data types
 - Validate nested objects/arrays
@@ -68,7 +102,7 @@ This skill validates API endpoints against ticket acceptance criteria and genera
 - Validate formats (ISO dates, URLs, etc.)
 
 **AC: Performance**
-- Measure response time
+- Measure response time from Postman CLI output
 - Compare against AC requirements
 
 **AC: Edge Cases**
@@ -84,7 +118,8 @@ This skill validates API endpoints against ticket acceptance criteria and genera
 **Ticket**: TICKET-XXX
 **Endpoint**: GET /api/endpoint
 **Tested At**: 2026-04-15T20:08:00.000Z
-**Status**: ✅ PASSED | ❌ FAILED
+**Tool**: Postman CLI v1.33.6
+**Status**: PASSED | FAILED
 
 ## Summary
 - Total AC: X
@@ -94,127 +129,68 @@ This skill validates API endpoints against ticket acceptance criteria and genera
 ## Detailed Results
 
 ### AC1: [Description]
-**Status**: ✅ PASSED
+**Status**: PASSED
 
-**Test**:
-```bash
-curl -X GET http://localhost:3000/health
-```
+**Command**:
+postman request GET http://localhost:3000/health --response-only
 
 **Response**:
-```json
 {
   "status": "healthy",
   "timestamp": "2026-04-15T20:08:00.000Z"
 }
-```
 
 **Validation**:
-- ✅ Status code: 200
-- ✅ Field 'status' exists
-- ✅ Field 'timestamp' exists
-- ✅ Response time: 12ms (< 50ms requirement)
+- Status code: 200
+- Field 'status' exists
+- Field 'timestamp' exists
+- Response time: 12ms (< 50ms requirement)
 
 ---
 
 ### AC2: [Description]
-**Status**: ❌ FAILED
+**Status**: FAILED
 
-**Test**:
-```bash
-curl -X GET http://localhost:3000/api/pokemon/999999
-```
+**Command**:
+postman request GET http://localhost:3000/api/pokemon/999999 --response-only
 
 **Expected**: 404 status
 **Actual**: 500 status
 
 **Failure Details**:
-- ❌ Expected status 404, got 500
+- Expected status 404, got 500
 - Server error instead of proper not-found handling
 
 ---
 
 ## Recommendations
-
 [If failed, suggest fixes]
 ```
 
-## Commands I'll Use
-
-```bash
-# Start server (if not running)
-curl -s http://localhost:3000/health || echo "Server not running"
-
-# Test endpoint
-curl -X GET http://localhost:3000/api/endpoint -w "\nStatus: %{http_code}\nTime: %{time_total}s\n"
-
-# Test with data
-curl -X POST http://localhost:3000/api/endpoint \
-  -H "Content-Type: application/json" \
-  -d '{"test": "data"}'
-
-# Create report directory
-mkdir -p test-results/TICKET-XXX
-
-# Write report
-cat > test-results/TICKET-XXX/report.md << EOF
-[report content]
-EOF
-```
-
-## Example Workflow
-
-When you ask: **"Test TICKET-001"**
-
-I will:
-1. Read `docs/tickets/TICKET-001.md`
-2. See it's the health endpoint (`GET /health`)
-3. Extract AC1, AC2, AC3
-4. Run tests:
-   - `curl http://localhost:3000/health`
-   - Check response structure
-   - Measure response time
-   - Test without auth
-5. Generate `test-results/TICKET-001/report.md`
-6. Tell you: "✅ TICKET-001 PASSED - All 3 acceptance criteria met"
-
-Or if failed:
-"❌ TICKET-001 FAILED - 1 of 3 acceptance criteria failed. Check test-results/TICKET-001/report.md"
-
-## Notes
-
-- Server must be running on `http://localhost:3000`
-- Tests are read-only (won't modify data)
-- Reports are timestamped
-- Previous reports are overwritten
-
----
-
 ## Summary Report Format
-
-When you ask for a test summary, I'll generate:
 
 ```markdown
 # Test Summary Report
 
 **Generated**: 2026-04-15T20:13:00.000Z
+**Tool**: Postman CLI v1.33.6
 **Total Tickets**: 7
-**Passed**: 5 ✅
-**Failed**: 2 ❌
+**Passed**: 5
+**Failed**: 2
 **Pass Rate**: 71%
 
 ## Status by Ticket
 
 | Ticket | Endpoint | Status | AC Passed | Last Tested |
 |--------|----------|--------|-----------|-------------|
-| TICKET-001 | GET /health | ✅ PASSED | 3/3 | 2026-04-15 |
-| TICKET-002 | GET /api/pokemon | ✅ PASSED | 6/6 | 2026-04-15 |
-| TICKET-003 | GET /api/pokemon/:id | ❌ FAILED | 5/6 | 2026-04-15 |
+| TICKET-001 | GET /health | PASSED | 3/3 | 2026-04-15 |
+| TICKET-002 | GET /api/pokemon | PASSED | 6/6 | 2026-04-15 |
+| TICKET-003 | GET /api/pokemon/:id | FAILED | 5/6 | 2026-04-15 |
 
 ## Failed Tickets
 
-### TICKET-003: Get Single Pokémon Details
-**Issue**: Returns 500 instead of 404 for non-existent Pokémon
+### TICKET-003: Get Single Pokemon Details
+**Issue**: Returns 500 instead of 404 for non-existent Pokemon
 **Fix**: Add proper error handling
 
 ## Recommendations
@@ -222,31 +198,21 @@ When you ask for a test summary, I'll generate:
 2. Re-test after fixes
 ```
 
-## Commands for Summary
+## Example Workflow
 
-```bash
-# List all results
-ls -1 test-results/ | grep "TICKET-"
+When you ask: **"Test TICKET-001"**
 
-# Generate summary
-cat > test-results/SUMMARY.md
-```
+1. Read `docs/tickets/TICKET-001.md`
+2. Delegate to the `postman-tester` agent
+3. Agent runs: `postman request GET http://localhost:3000/health --response-only`
+4. Agent validates response against AC1, AC2, AC3
+5. Agent writes `test-results/TICKET-001/report.md`
+6. Report back: "TICKET-001 PASSED - All 3 acceptance criteria met"
 
-## Example Outputs
+## Notes
 
-**Individual Test:**
-```
-✅ TICKET-001 PASSED
-All 3 acceptance criteria met.
-Report: test-results/TICKET-001/report.md
-```
-
-**Summary:**
-```
-📊 Test Summary
-
-Total: 7 | ✅ 5 Passed (71%) | ❌ 2 Failed
-
-Failed: TICKET-003, TICKET-006
-Full report: test-results/SUMMARY.md
-```
+- Server must be running on `http://localhost:3000`
+- All endpoint tests use `postman request` (Postman CLI), not curl
+- Collection tests use `postman collection run` when a collection file is available
+- Tests are read-only (won't modify data)
+- Reports are timestamped and overwrite previous runs
